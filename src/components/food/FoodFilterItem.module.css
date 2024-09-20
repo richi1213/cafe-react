@@ -1,0 +1,23 @@
+.filterCategory {
+  align-items: center;
+  background-color: #f5f5f5;
+  border-radius: 60px;
+  color: #a5a5a5;
+  display: flex;
+  flex-direction: column;
+  height: 150px;
+  justify-content: center;
+  transition: all 0.3s;
+  width: 100px;
+}
+
+.filterCategory:hover {
+  background-color: #fff;
+  box-shadow: 1px 64px 103px -28px #878787;
+  color: #000;
+}
+
+.filterCategory img {
+  width: 70px;
+  height: 70px;
+}

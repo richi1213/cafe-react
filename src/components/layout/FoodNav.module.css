@@ -1,0 +1,16 @@
+.nav ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-top: 30px;
+  list-style: none;
+}
+
+/* .nav :global(.active) {
+  background-color: green;
+} */
+
+.nav a {
+  text-decoration: none;
+}
