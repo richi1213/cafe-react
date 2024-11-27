@@ -24,8 +24,6 @@ function reducer(state, action) {
         updatedItems = [...state.foodItems, { ...action.payload }];
       }
 
-      console.log("Updated foodItems after adding:", updatedItems);
-
       return {
         ...state,
         foodItems: updatedItems,
@@ -40,6 +38,10 @@ function reducer(state, action) {
         ...state,
         foodItems: updatedItems,
       };
+    }
+
+    case "food/emptied": {
+      return initialState;
     }
 
     case "food/incrementedQuantity": {
@@ -87,6 +89,9 @@ export function CartProvider({ children }) {
   function removeFoodFromCart(foodId) {
     dispatch({ type: "food/removed", payload: { id: foodId } });
   }
+  function emptyCart() {
+    dispatch({ type: "food/emptied" });
+  }
 
   function incrementFoodQuantity(foodId) {
     dispatch({ type: "food/incrementedQuantity", payload: { id: foodId } });
@@ -102,6 +107,7 @@ export function CartProvider({ children }) {
         foodItems,
         addFoodToCart,
         removeFoodFromCart,
+        emptyCart,
         incrementFoodQuantity,
         decrementFoodQuantity,
       }}

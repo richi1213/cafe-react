@@ -13,7 +13,7 @@ function FoodLayout({ children, intersectionRef, isIntersecting, foodData }) {
     setIsCartOpen(value);
   }
 
-  // const orderClickHandeler = () => {
+  // const orderClickHandler = () => {
   //   setIsOrderPlaced(true);
   //   setInterval(() => {
   //     setIsOrderPlaced(false);

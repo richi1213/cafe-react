@@ -1,14 +1,57 @@
+import { useState } from "react";
 import { useCart } from "../../store/CartContext";
 import CartModal from "../../ui/overlays/CartModal";
 import styles from "./Cart.module.css";
 import CartItem from "./CartItem";
+import CheckoutForm from "./CheckoutForm";
+import { createOrder } from "../../services/supabase";
 
 function Cart({ clickHandler }) {
   const cartContext = useCart();
+
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
   const isEmpty = cartContext.foodItems.length === 0;
 
   const cancelHandler = () => {
     clickHandler(false);
+  };
+
+  const orderHandler = () => {
+    setIsCheckingOut(true);
+  };
+
+  const confirmHandler = async ({ name, phoneNumber, address }) => {
+    if (!name || !phoneNumber || !address) {
+      console.error("Missing required user information");
+      return;
+    }
+
+    const orderFood = {
+      user: {
+        name,
+        phoneNumber,
+        address,
+      },
+      items: cartContext.foodItems.map((item) => ({
+        name: item.name,
+        quantity: item.quantity,
+      })),
+      totalPrice: Number(totalPrice),
+    };
+
+    // console.log("Order data being sent to Supabase:", orderFood); // Log order data before sending
+
+    // const insertedOrder = await createOrder(orderFood);
+    createOrder(orderFood);
+
+    // // Log the inserted order for debugging
+    // console.log("Inserted order response:", insertedOrder);
+
+    // if (insertedOrder) {
+    //   console.log("Order successfully created:", insertedOrder);
+    // } else {
+    //   console.error("Failed to create order");
+    // }
   };
 
   const cartIncrementQuantityHandler = (itemId) => {
@@ -32,7 +75,12 @@ function Cart({ clickHandler }) {
         Cancel
       </button>
       {!isEmpty && (
-        <button className={`${styles.order} ${styles.button}`}>Order</button>
+        <button
+          className={`${styles.order} ${styles.button}`}
+          onClick={orderHandler}
+        >
+          Order
+        </button>
       )}
     </div>
   );
@@ -54,7 +102,14 @@ function Cart({ clickHandler }) {
         </div>
 
         <h2>{`Total: $${totalPrice}`}</h2>
-        {cartControls}
+
+        {isCheckingOut && (
+          <CheckoutForm
+            onCancelClick={cancelHandler}
+            onConfirmClick={confirmHandler}
+          />
+        )}
+        {!isCheckingOut && cartControls}
       </div>
     </CartModal>
   );

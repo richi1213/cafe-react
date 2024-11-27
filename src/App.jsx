@@ -1,52 +1,55 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Burger from "./pages/Burger";
-import Pizza from "./pages/Pizza";
-import Meal from "./pages/Meal";
-import Desert from "./pages/Desert";
-import Homepage from "./pages/Homepage";
-import PageNotFound from "./pages/PageNotFound";
-import { useEffect, useRef, useState } from "react";
-import { useInView } from "react-intersection-observer";
-import { getFood } from "./services/apiFood";
-import { CartProvider } from "./store/CartContext";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Burger from './pages/Burger';
+import Pizza from './pages/Pizza';
+import Meal from './pages/Meal';
+import Desert from './pages/Desert';
+import Homepage from './pages/Homepage';
+import PageNotFound from './pages/PageNotFound';
+import Loader from './ui/loader/Loader';
+import { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { getFood } from './services/apiFood';
+import { CartProvider } from './store/CartContext';
+import { capitalizeFirstLetter } from './utils/helpers/strings';
 
 function App() {
   const [foodData, setFoodData] = useState([]);
   const [intersectionRef, isVisible] = useInView();
-  const [curFoodCategory, setCurFoodCategory] = useState("all");
-
-  function capitalizeFirstLetter(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
+  const [curFoodCategory, setCurFoodCategory] = useState('all');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getFood()
       .then((data) => {
         setFoodData(data);
+        setIsLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching food data:", error);
+        console.error('Error fetching food data:', error);
+        setIsLoading(false);
       });
   }, []);
 
   useEffect(() => {
     if (!curFoodCategory) return;
-    if (curFoodCategory === "all") {
-      document.title = "Cafe React";
+    if (curFoodCategory === 'all') {
+      document.title = 'Cafe React';
       return;
     }
     document.title = `Category | ${capitalizeFirstLetter(curFoodCategory)}`;
     return () => {
-      document.title = "Cafe React";
+      document.title = 'Cafe React';
     };
   }, [curFoodCategory]);
+
+  if (isLoading) return <Loader />;
 
   return (
     <CartProvider>
       <BrowserRouter>
         <Routes>
           <Route
-            path="/"
+            path='/'
             element={
               <Homepage
                 foodData={foodData}
@@ -57,7 +60,7 @@ function App() {
             }
           />
           <Route
-            path="burger"
+            path='burger'
             element={
               <Burger
                 foodData={foodData}
@@ -69,7 +72,7 @@ function App() {
             }
           />
           <Route
-            path="pizza"
+            path='pizza'
             element={
               <Pizza
                 foodData={foodData}
@@ -81,7 +84,7 @@ function App() {
             }
           />
           <Route
-            path="meal"
+            path='meal'
             element={
               <Meal
                 foodData={foodData}
@@ -93,7 +96,7 @@ function App() {
             }
           />
           <Route
-            path="desert"
+            path='desert'
             element={
               <Desert
                 foodData={foodData}
@@ -104,7 +107,7 @@ function App() {
               />
             }
           />
-          <Route path="*" element={<PageNotFound />} />
+          <Route path='*' element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>
     </CartProvider>
